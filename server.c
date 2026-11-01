@@ -76,14 +76,10 @@ int main(){
 
         }
 
-        printf("Closing Connection... Goodbye!");
+        printf("Closing Connection... Goodbye!\n");
 
         close(clientSocket);
         close(serverSocket);
 
         return 0;
-
-
-
-
 }
