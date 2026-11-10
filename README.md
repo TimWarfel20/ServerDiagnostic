@@ -31,9 +31,7 @@ Next, you will run the client program. Again, I have hard coded the port and an 
 After a connection has been made, both programs will print that a connection has been made. The client program will begin prompting the user for a command. After the user has made a selection, the client program will send a given command over the socket connection to the server. The server will run the command and send the output back to the client. The client will print the command output.
 
 ### To-Do
-- Fix commands where the output is longer than the 1024 byte buffer size
 - Add more commands for diagnostic
-- Add commenting to the client program, similar to how the server is set up
 - Check for errors in connecting/sending in both programs
 - Add error checking for the inputs the user puts in
 - Display information to the server regarding what commands are being ran
