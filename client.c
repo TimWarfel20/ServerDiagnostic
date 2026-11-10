@@ -77,23 +77,40 @@ int main(){
         case 4:
         send(clientSocket, "hostname -I", strlen("hostname -i"), 0);    
         break;
+        
+
+        case 5:
+         close(clientSocket);
+         printf("The connection has been terminated. Goodbye\n");
+        return 0;
         }
 
         //I think this recv() needs to also be in a loop, so if bytesReceived is == 1024, then it runs again, because this means it did not receive
         //everything in the buffer
-        ssize_t bytesReceived = recv(clientSocket, recBuffer, BUFFER_SIZE - 1, 0);
+        
+        int totalReceived = 0;
 
-        if(bytesReceived > 0){
-            printf("\n%s", recBuffer);
+        while(1){
+
+            ssize_t bytesReceived = recv(clientSocket, recBuffer + totalReceived, sizeof(recBuffer) - totalReceived - 1, 0);
+           
+
+            if(bytesReceived < 0){
+                printf("Error: Network Error\n");
+                break;
+            }
+
+            totalReceived += bytesReceived;
+            recBuffer[totalReceived] = '\0';
+
+            char* markerPosition = strstr(recBuffer, "$#@!");
+
+            if(markerPosition != NULL){
+                *markerPosition = '\0';
+                printf("\n%s", recBuffer);
+                break;
+            }
         }
-
     }
-
-
-    close(clientSocket);
-
-    printf("The connection has been terminated. Goodbye\n");
-
-    return 0;
 
 }

