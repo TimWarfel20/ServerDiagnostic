@@ -83,6 +83,7 @@ int main(){
             //DO error checking here later
 
             while(fgets(commandOutput, sizeof(commandOutput), pipe) != NULL){
+               printf("Send to Client: %s", commandOutput);
                send(clientSocket, commandOutput, strlen(commandOutput), 0);
             }
 
