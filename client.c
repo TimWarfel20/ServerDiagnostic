@@ -70,7 +70,7 @@ int main(){
         switch(choice){
 
         case 1:
-        send(clientSocket, "whoami", strlen("whoamI"), 0);    
+        send(clientSocket, "whoami", strlen("whoami"), 0);    
         break;
 
         case 2:
@@ -82,12 +82,14 @@ int main(){
         break;
 
         case 4:
-        send(clientSocket, "hostname -I", strlen("hostname -i"), 0);    
+        send(clientSocket, "hostname -I", strlen("hostname -I"), 0);    
         break;
         
         case 5:
-         close(clientSocket);
-         printf("The connection has been terminated. Goodbye\n");
+        //Sends termination tag recognized by server program
+        send(clientSocket, "TERMINATECONNECTION", strlen("TERMINATECONNECTION"), 0);
+        close(clientSocket);
+        printf("The connection has been terminated. Goodbye\n");
         return 0;
         }
         

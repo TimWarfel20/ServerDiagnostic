@@ -34,8 +34,6 @@ After a connection has been made, both programs will print that a connection has
 - Add more commands for diagnostic
 - Check for errors in connecting/sending in both programs
 - Add error checking for the inputs the user puts in
-- Display information to the server regarding what commands are being ran
-- Show the server when a client disconnects (More important for when multithreading is added)
 - Add multithreading (Should be done when everything else is perfect)
 - Add a log, both for the commands that are sent to the server and for the server itself, save to file
 

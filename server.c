@@ -8,6 +8,8 @@
 #define PORT 8080
 #define BUFFER_SIZE 1024
 
+void terminateConnection(int clientSocket, int serverSocket);
+
 int main(){
 
     int serverSocket;
@@ -36,7 +38,7 @@ int main(){
     
         //Attempts to bind a socket to an IP Address and a Port. Returns a negative value if it fails
         if (bind( serverSocket, (struct sockaddr *) &address, sizeof(address)) < 0){
-            printf("Error: Socket Failed to Bind");
+            printf("Error: Socket Failed to Bind\n");
             exit(-1);
         }
         
@@ -76,6 +78,11 @@ int main(){
 
         if(bytesReceived > 0){
 
+            if(strcmp(buffer, "TERMINATECONNECTION") == 0){
+                printf("Connection has been terminated by the client: Terminating Program...\n");
+                terminateConnection(clientSocket, serverSocket);
+            }
+
              buffer[bytesReceived] = '\0';
 
             FILE *pipe = popen(buffer, "r");
@@ -83,9 +90,15 @@ int main(){
             //DO error checking here later
 
             while(fgets(commandOutput, sizeof(commandOutput), pipe) != NULL){
+
+                /*Checks every message for termination tag, calls function if found.
+                //Will need to be revamped once multithreading is added
+                //In that instance, we should only terminate from the connection that wants to be connected
+                Or the final connection to the server, cross that bridge later*/
+              
                printf("Send to Client: %s", commandOutput);
                send(clientSocket, commandOutput, strlen(commandOutput), 0);
-            }
+        }
 
             pclose(pipe);
 
@@ -96,10 +109,11 @@ int main(){
         }
     }
 
-        printf("Closing Connection... Goodbye!\n");
+       
+}
 
-        close(clientSocket);
-        close(serverSocket);
-
-        return 0;
+void terminateConnection(int clientSocket, int serverSocket){
+    close(clientSocket);
+    close(serverSocket);
+    exit(0);
 }
