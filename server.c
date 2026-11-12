@@ -87,6 +87,11 @@ int main(){
 
             FILE *pipe = popen(buffer, "r");
 
+            if(pipe == NULL){
+                printf("Error: Could not run command\n");
+                exit(-1);
+            }
+
             //DO error checking here later
 
             while(fgets(commandOutput, sizeof(commandOutput), pipe) != NULL){

@@ -55,9 +55,15 @@ int main(){
     printf("Connected to Server on port %d\n", PORT);
     
     int choice = -1;
+    //Assume valid unless not, 1 for valid 0 for not valid
+    int validChoice = 1;
 
     //Presents menu until exit option is picked
     while(choice != 5){
+        //Resets to valid choice every interation
+        validChoice = 1;
+
+        //Presents options to client
         printf("Please pick a command:\n");
         printf("1. Show Hostname\n");
         printf("2. Show Uptime\n");
@@ -65,10 +71,13 @@ int main(){
         printf("4. Show IP Address\n");
         printf("5. Exit\n");
 
-        scanf("%d", &choice);
+        if(scanf("%d", &choice) == 0){
+            choice = -1;
+        }
 
         switch(choice){
 
+        //Sends commands to server
         case 1:
         send(clientSocket, "whoami", strlen("whoami"), 0);    
         break;
@@ -91,6 +100,13 @@ int main(){
         close(clientSocket);
         printf("The connection has been terminated. Goodbye\n");
         return 0;
+
+        default:
+        printf("Error: Invalid menu option, Please try again\n");
+        //Empty buffer before returning to menu
+        while(getchar() != '\n');
+        validChoice = 0;
+        break;
         }
         
         //Receiving section of code (Should probably be in a seperate function)
@@ -109,7 +125,7 @@ int main(){
         */
         int totalReceived = 0;
 
-        while(1){
+        while(validChoice){
 
             //receives piece of message
             ssize_t bytesReceived = recv(clientSocket, recBuffer + totalReceived, sizeof(recBuffer) - totalReceived - 1, 0);
